@@ -1,0 +1,27 @@
+# K-13 live bot (systemd user unit template).
+# Replace @K13_DIR@ with the absolute path of this checkout and @NODE@ with the
+# node binary (Node 22.5+), then:
+#   cp deploy/k13-bot.service ~/.config/systemd/user/ && systemctl --user daemon-reload
+#   systemctl --user enable --now k13-bot
+# Credentials: the first run needs BOT_TOKEN or BOT_NONCE (see src/bot.ts);
+# afterwards the token is kept in @K13_DIR@/.token-<BOT_NAME> (mode 600). Do
+# not put tokens in this file.
+[Unit]
+Description=K-13 ScrabbleBot
+After=network-online.target k13-stdb.service
+
+[Service]
+WorkingDirectory=@K13_DIR@
+Environment=BOT_NAME=k13
+# Opponent model: the miner's working copy (default: data/history.sqlite).
+Environment=K13_MODEL_DB=@K13_DIR@/data/miner.sqlite
+# Optional: tournament-only mode, never join the ladder lobby.
+#Environment=K13_NO_LADDER=1
+ExecStart=@NODE@ @K13_DIR@/node_modules/tsx/dist/cli.mjs src/bot.ts --agent palace
+Restart=always
+RestartSec=5
+StandardOutput=append:@K13_DIR@/logs/bot.log
+StandardError=append:@K13_DIR@/logs/bot.log
+
+[Install]
+WantedBy=default.target

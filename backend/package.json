@@ -1,0 +1,20 @@
+{
+  "name": "k13-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "K-13's SpacetimeDB module (database 'k13' on a local SpacetimeDB server)",
+  "scripts": {
+    "typecheck": "tsc --noEmit -p .",
+    "build": "spacetime --config-path ${K13_STDB_CONFIG:-$HOME/.config/k13/local.toml} build -p .",
+    "publish": "spacetime --config-path ${K13_STDB_CONFIG:-$HOME/.config/k13/local.toml} publish -s k13 -p . -y k13",
+    "generate": "spacetime --config-path ${K13_STDB_CONFIG:-$HOME/.config/k13/local.toml} generate --lang typescript --out-dir ../src/backend_bindings -p ."
+  },
+  "dependencies": {
+    "spacetimedb": "2.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3"
+  }
+}
