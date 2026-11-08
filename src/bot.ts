@@ -133,13 +133,16 @@ async function main() {
     console.warn(`${bar}\n!! Agent '${args.agent}' unavailable: ${loaded.notes.join("; ")}\n!! FALLING BACK TO THE STARTER AGENT\n${bar}`);
   } else if (loaded.notes.length) log.human(`agent ${label}: ${loaded.notes.join("; ")}`);
 
-  // After each live match: CEM self-play with ~200 slight param mutants.
-  // Off with K13_EVOLVE=0. Adopts improved params.json into the live agent.
+  // After each live match: fast CEM self-play (small pop, 1 deal) so gens finish
+  // under time pressure. Off with K13_EVOLVE=0. Adopts improved params.json live.
   const evolveOn = process.env.K13_EVOLVE !== "0" && !args.dryRun && !loaded.fallback && loaded.agent.name === "palace";
   if (evolveOn) {
     const brain = await import("./brain/evolve.js");
     const paramsMod = await import("./brain/params.js");
     const palace = loaded.agent as import("./brain/agent.js").PalaceAgent;
+    const evolvePop = Number(process.env.K13_EVOLVE_POP ?? 40) || 40;
+    const evolveDeals = Number(process.env.K13_EVOLVE_DEALS ?? 1) || 1;
+    const evolveElite = Number(process.env.K13_EVOLVE_ELITE ?? 4) || 4;
     const prevEnd = palace.onMatchEnd?.bind(palace);
     palace.onMatchEnd = (view) => {
       try {
@@ -149,8 +152,9 @@ async function main() {
       }
       brain.scheduleEvolve(
         {
-          pop: Number(process.env.K13_EVOLVE_POP ?? 200) || 200,
-          deals: Number(process.env.K13_EVOLVE_DEALS ?? 2) || 2,
+          pop: evolvePop,
+          deals: evolveDeals,
+          elite: evolveElite,
           write: true,
           onLog: (line) => log.human(line),
         },
@@ -168,7 +172,7 @@ async function main() {
         },
       );
     };
-    log.human("evolve: after each match, 200 self-play mutants (K13_EVOLVE=0 to disable)");
+    log.human(`evolve: after each match, ${evolvePop} mutants x ${evolveDeals} deal(s) (K13_EVOLVE=0 to disable)`);
   }
 
   warmUp(loaded.agent, log);
