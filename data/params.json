@@ -1,18 +1,22 @@
 {
-  "note": "Mean of the cross-entropy search after 9 generations (src/brain/tune.ts --setting field --deals 150 --pop 12 --elite 4 --seed 11); the search ended when the field objective saturated near mean place 1.15. Validated with src/brain/eval.ts; see src/brain/README.md. riskCoef is 0: the variance term had no measurable effect either way in eval ablations, so it stays off.",
-  "tunedAt": "2026-10-25T01:32:00Z",
+  "note": "live evolve: 200 mutants x 2 self-play deals, seed 74253533; beat incumbent place 6.000 -> 1.000",
+  "tunedAt": "2026-11-08T03:55:40.272Z",
+  "evolvedFromMatch": true,
   "params": {
-    "coinBonus": 0.32,
-    "playMargin": 2.7,
-    "minPlayLen": 2,
-    "lambdaScale": 1.08,
-    "incomeShare": 0.47,
-    "futureScale": 1.07,
-    "futureValueScale": 1.14,
-    "kMax": 13,
-    "rivalWeight": 0.9,
-    "maxOverbid": 4.85,
-    "calibRate": 0.056,
-    "riskCoef": 0
+    "coinBonus": 0.351046840632244,
+    "playMargin": 2.616886816703552,
+    "minPlayLen": 2.1015628211511954,
+    "lambdaScale": 1.0652165147382138,
+    "incomeShare": 0.4684712781254612,
+    "futureScale": 1.0852042605233505,
+    "futureValueScale": 1.1061216110660446,
+    "kMax": 13.048709496445277,
+    "rivalWeight": 0.9007909770634592,
+    "maxOverbid": 4.874750923742532,
+    "calibRate": 0.051517445279651415,
+    "riskCoef": -0.0023339193420759637,
+    "denialWeight": 1.0055871645365304,
+    "driveWeight": 1.012333357970381,
+    "selectFuture": 0.00572537419587184
   }
 }
