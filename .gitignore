@@ -2,5 +2,9 @@ node_modules/
 dist/
 .token-*
 data/*.sqlite*
+data/evolve-status.json
+data/evolve.jsonl
 logs/
 *.log
+.env*
+.llm.env

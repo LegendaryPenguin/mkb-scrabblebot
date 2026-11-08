@@ -205,6 +205,11 @@ export function fileOverrides(file = PARAMS_PATH): Partial<Params> {
   return out;
 }
 
+/** Drop the cached file overrides so the next resolveParams() re-reads disk. */
+export function reloadFileParams(): void {
+  fileParams = undefined;
+}
+
 /** Keeps only known keys whose type matches the default's. */
 export function sanitize(raw: unknown): Partial<Params> {
   const out: Record<string, unknown> = {};

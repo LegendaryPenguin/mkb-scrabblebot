@@ -132,6 +132,45 @@ async function main() {
     const bar = "!".repeat(72);
     console.warn(`${bar}\n!! Agent '${args.agent}' unavailable: ${loaded.notes.join("; ")}\n!! FALLING BACK TO THE STARTER AGENT\n${bar}`);
   } else if (loaded.notes.length) log.human(`agent ${label}: ${loaded.notes.join("; ")}`);
+
+  // After each live match: CEM self-play with ~200 slight param mutants.
+  // Off with K13_EVOLVE=0. Adopts improved params.json into the live agent.
+  const evolveOn = process.env.K13_EVOLVE !== "0" && !args.dryRun && !loaded.fallback && loaded.agent.name === "palace";
+  if (evolveOn) {
+    const brain = await import("./brain/evolve.js");
+    const paramsMod = await import("./brain/params.js");
+    const palace = loaded.agent as import("./brain/agent.js").PalaceAgent;
+    const prevEnd = palace.onMatchEnd?.bind(palace);
+    palace.onMatchEnd = (view) => {
+      try {
+        prevEnd?.(view);
+      } catch (e) {
+        log.write("error", { where: "onMatchEnd", err: errMsg(e) });
+      }
+      brain.scheduleEvolve(
+        {
+          pop: Number(process.env.K13_EVOLVE_POP ?? 200) || 200,
+          deals: Number(process.env.K13_EVOLVE_DEALS ?? 2) || 2,
+          write: true,
+          onLog: (line) => log.human(line),
+        },
+        (r) => {
+          if (!r.wrote) return;
+          try {
+            paramsMod.reloadFileParams();
+            palace.adoptParams(paramsMod.resolveParams());
+            log.human(
+              `[evolve] live params adopted (place ${r.incumbent.place.toFixed(3)} -> ${r.best.place.toFixed(3)})`,
+            );
+          } catch (e) {
+            log.warn(`[evolve] adopt failed: ${errMsg(e)}`);
+          }
+        },
+      );
+    };
+    log.human("evolve: after each match, 200 self-play mutants (K13_EVOLVE=0 to disable)");
+  }
+
   warmUp(loaded.agent, log);
 
   let asBotId: bigint | undefined;

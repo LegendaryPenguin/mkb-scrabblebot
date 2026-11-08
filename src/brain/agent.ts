@@ -130,8 +130,13 @@ export class PalaceAgent implements Agent {
     this.maxSamples = Math.max(1, Math.floor(o.params.maxSamples * scale));
   }
 
+  /** Hot-swap tuned fields between matches (live evolve). Does not resize sample caps mid-match. */
+  adoptParams(next: Params): void {
+    Object.assign(this.p, next);
+  }
+
   /** maxSamples, scaled by liveCompute in live mode. */
-  private readonly maxSamples: number;
+  private maxSamples: number;
 
   // ---------- state ----------
 

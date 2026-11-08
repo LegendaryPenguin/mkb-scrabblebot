@@ -146,7 +146,8 @@ export class WordEngine {
     for (let r = 0; r < 26; r++) this.rankOf[order.charCodeAt(r) - 65] = r;
 
     // Exactly the server's lexWords(): split on \n, drop empty lines.
-    const lex = text.split("\n").filter((l) => l.length > 0);
+    // Strip trailing \r so a CRLF checkout on Windows doesn't zero the dict.
+    const lex = text.split("\n").map((l) => (l.endsWith("\r") ? l.slice(0, -1) : l)).filter((l) => l.length > 0);
     this.lexWords = lex;
     let sorted = true;
     for (let i = 1; i < lex.length; i++) {
