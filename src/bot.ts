@@ -140,9 +140,9 @@ async function main() {
     const brain = await import("./brain/evolve.js");
     const paramsMod = await import("./brain/params.js");
     const palace = loaded.agent as import("./brain/agent.js").PalaceAgent;
-    const evolvePop = Number(process.env.K13_EVOLVE_POP ?? 40) || 40;
-    const evolveDeals = Number(process.env.K13_EVOLVE_DEALS ?? 1) || 1;
-    const evolveElite = Number(process.env.K13_EVOLVE_ELITE ?? 4) || 4;
+    const evolvePop = Number(process.env.K13_EVOLVE_POP ?? 60) || 60;
+    const evolveDeals = Number(process.env.K13_EVOLVE_DEALS ?? 2) || 2;
+    const evolveElite = Number(process.env.K13_EVOLVE_ELITE ?? 5) || 5;
     const prevEnd = palace.onMatchEnd?.bind(palace);
     palace.onMatchEnd = (view) => {
       try {

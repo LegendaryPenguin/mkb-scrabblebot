@@ -92,9 +92,9 @@ function appendLog(row: unknown): void {
 
 /** One CEM generation: pop slight mutants vs self (5 palace seats). */
 export async function evolveOnce(opts: EvolveOpts = {}): Promise<EvolveResult> {
-  const pop = Math.max(2, opts.pop ?? 40);
-  const deals = Math.max(1, opts.deals ?? 1);
-  const elite = Math.max(1, Math.min(pop, opts.elite ?? 4));
+  const pop = Math.max(2, opts.pop ?? 60);
+  const deals = Math.max(1, opts.deals ?? 2);
+  const elite = Math.max(1, Math.min(pop, opts.elite ?? 5));
   const workers = Math.max(1, opts.workers ?? Math.min(14, Math.max(6, (os.cpus().length || 8) - 1)));
   const keys = opts.keys ?? DEFAULT_KEYS;
   const sigmaFrac = opts.sigmaFrac ?? 1 / 20;
